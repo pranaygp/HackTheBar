@@ -1,9 +1,13 @@
 package com.hackthebar.pranaygp.drinkup;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Locale;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
@@ -13,6 +17,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -39,7 +44,8 @@ public class MainActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
-    static Socket barTapSocket;
+    static NetClient nc;
+    static beerTapSocket bts;
     static boolean tapIsFlowing;
 
     @Override
@@ -50,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         tapIsFlowing = false;
 
 
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -58,6 +65,13 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.pager);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Bundle extras = intent.getExtras();
+        Log.i("DATA", extras.getString("response_data"));
     }
 
 
@@ -162,22 +176,21 @@ public class MainActivity extends AppCompatActivity {
                             if (tapIsFlowing){
                                 tapToggle.setImageDrawable(getResources().getDrawable(R.drawable.beer));
                                 tapIsFlowing = false;
+                                bts.onCancelled();
+                                Log.d("Switch Toggle", "onClick : cancelledBarTap " + bts.isCancelled());
+
                             } else {
                                 tapToggle.setImageDrawable(getResources().getDrawable(R.drawable.beer_flowing));
                                 tapIsFlowing = true;
-//                                try {
-//                                    barTapSocket = new Socket("", 1337);
-//
-//
-//                                } catch (IOException e) {
-//                                    e.printStackTrace();
-//                                }
+
+                                bts = new beerTapSocket(getContext());
+                                bts.execute("12345\n");
                             }
                         }
                     });
                     break;
                 case 2:
-                    rootView = inflater.inflate(R.layout.fragment_main, container, false);
+                    rootView = inflater.inflate(R.layout.cost_tracker, container, false);
                     break;
                 case 3:
                     rootView = inflater.inflate(R.layout.fragment_main, container, false);
