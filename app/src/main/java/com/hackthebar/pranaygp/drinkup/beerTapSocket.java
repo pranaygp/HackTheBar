@@ -24,7 +24,7 @@ public class beerTapSocket extends AsyncTask<String, Void, Void> {
     @Override
     protected Void doInBackground(String... strings) {
         getData = true;
-        nc = new NetClient("172.17.111.66", 1338, null);
+        nc = new NetClient("172.17.46.16", 1338, null);
         while (getData) {
 
             nc.sendDataWithString(strings[0]);

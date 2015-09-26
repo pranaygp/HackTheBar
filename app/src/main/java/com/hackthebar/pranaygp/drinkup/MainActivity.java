@@ -25,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -44,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
+
+    static TextView cashTicker;
+
     static NetClient nc;
     static beerTapSocket bts;
     static boolean tapIsFlowing;
@@ -54,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         tapIsFlowing = false;
-
+        cashTicker = null;
 
 
         // Create the adapter that will return a fragment for each of the three
@@ -67,11 +71,27 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+////        tapToggle.setImageDrawable(getResources().getDrawable(R.drawable.beer));
+//        tapIsFlowing = false;
+//        bts.onCancelled();
+//        Log.d("Activity Paused", "onClick : cancelledBarTap " + bts.isCancelled());
+//    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         Bundle extras = intent.getExtras();
+
         Log.i("DATA", extras.getString("response_data"));
+        double cash = Double.parseDouble(extras.getString("response_data"))/100;
+
+        if (cashTicker != null){
+            cashTicker.setText("$" + cash);
+        }
+        tapIsFlowing = true;
     }
 
 
@@ -191,6 +211,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case 2:
                     rootView = inflater.inflate(R.layout.cost_tracker, container, false);
+                    cashTicker = (TextView) rootView.findViewById(R.id.cash_ticker_text_view);
                     break;
                 case 3:
                     rootView = inflater.inflate(R.layout.fragment_main, container, false);
