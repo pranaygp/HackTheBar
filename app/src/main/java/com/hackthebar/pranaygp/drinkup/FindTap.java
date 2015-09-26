@@ -1,16 +1,33 @@
 package com.hackthebar.pranaygp.drinkup;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 public class FindTap extends AppCompatActivity {
+
+    public final Context mContext = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_find_tap);
+
+        Button registerBarTapCode = (Button) findViewById(R.id.bar_tap_select_go_button);
+
+        registerBarTapCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent initiateMainActivity = new Intent(mContext, MainActivity.class);
+                startActivity(initiateMainActivity);
+            }
+        });
+
     }
 
     @Override
