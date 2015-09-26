@@ -1,7 +1,10 @@
 package com.hackthebar.pranaygp.drinkup;
 
+import java.io.IOException;
+import java.net.Socket;
 import java.util.Locale;
 
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -16,6 +19,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,11 +39,15 @@ public class MainActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     ViewPager mViewPager;
+    static Socket barTapSocket;
+    static boolean tapIsFlowing;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        tapIsFlowing = false;
 
 
         // Create the adapter that will return a fragment for each of the three
@@ -95,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 2;
         }
 
         @Override
@@ -141,7 +150,39 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            Bundle args = getArguments();
+            View rootView = null;
+            switch (args.getInt(ARG_SECTION_NUMBER)){
+                case 1:
+                    rootView = inflater.inflate(R.layout.open_tap, container, false);
+                    final ImageView tapToggle = (ImageView) rootView.findViewById(R.id.bar_tap_toggle);
+                    tapToggle.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if (tapIsFlowing){
+                                tapToggle.setImageDrawable(getResources().getDrawable(R.drawable.beer));
+                                tapIsFlowing = false;
+                            } else {
+                                tapToggle.setImageDrawable(getResources().getDrawable(R.drawable.beer_flowing));
+                                tapIsFlowing = true;
+//                                try {
+//                                    barTapSocket = new Socket("", 1337);
+//
+//
+//                                } catch (IOException e) {
+//                                    e.printStackTrace();
+//                                }
+                            }
+                        }
+                    });
+                    break;
+                case 2:
+                    rootView = inflater.inflate(R.layout.fragment_main, container, false);
+                    break;
+                case 3:
+                    rootView = inflater.inflate(R.layout.fragment_main, container, false);
+                    break;
+            }
             return rootView;
         }
     }
