@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">DrinkUp</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="find_tap">enter bar tap code</string>
+</resources>
